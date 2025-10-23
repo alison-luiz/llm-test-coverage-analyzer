@@ -280,6 +280,7 @@ Trabalho de Conclusão de Curso - 2025
 
 <div align="center">
 
-Desenvolvido com 💙 por [Alison Luiz da Silva](https://github.com/seu-usuario)
+Desenvolvido com 💙 por [Alison Luiz da Silva](https://github.com/alison-luiz)
 
 </div>
+

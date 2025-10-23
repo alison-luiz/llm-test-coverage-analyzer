@@ -24,6 +24,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.67.0",
     "@octokit/rest": "^20.0.2",
     "axios": "^1.6.2",
     "dotenv": "^16.3.1",

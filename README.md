@@ -215,20 +215,25 @@ Exemplo: npm start multiple JavaScript 100 3
 llm-test-coverage-analyzer/
 ├── src/
 │   ├── config/              # Configurações da aplicação
+│   │   └── index.ts         # Validação e exportação de configs
 │   ├── services/            # Serviços principais
 │   │   ├── AnalysisOrchestrator.ts  # Orquestrador de análises
 │   │   ├── CoverageService.ts       # Serviço de cobertura
 │   │   ├── GitHubService.ts         # Integração GitHub
-│   │   └── LLMService.ts            # Integração LLM
+│   │   └── LLMService.ts            # Integração LLM (OpenAI/Anthropic)
+│   ├── prompts/             # Prompts para modelos LLM
+│   │   ├── systemPrompt.ts  # Prompt do sistema (instruções)
+│   │   └── analysisPrompt.ts # Builder do prompt de análise
 │   ├── types/               # Definições de tipos TypeScript
+│   │   └── index.ts         # Tipos e interfaces
 │   ├── utils/               # Utilitários
 │   │   ├── fileSystem.ts    # Operações de sistema de arquivos
-│   │   └── logger.ts        # Sistema de logs
+│   │   └── logger.ts        # Sistema de logs estruturados
 │   └── index.ts             # Ponto de entrada da aplicação
-├── dist/                    # Arquivos compilados
+├── dist/                    # Arquivos compilados (gerado)
 ├── data/                    # Dados temporários e relatórios
 │   ├── repositories/        # Repositórios clonados
-│   └── reports/             # Relatórios gerados
+│   └── reports/             # Relatórios gerados em JSON
 ├── package.json             # Dependências do projeto
 ├── tsconfig.json            # Configuração TypeScript
 └── README.md                # Este arquivo
@@ -247,14 +252,19 @@ O sistema é organizado em camadas:
    - `GitHubService`: Gerencia interações com GitHub
    - `LLMService`: Interface unificada com modelos de linguagem (OpenAI e Anthropic)
 
-2. **Camada de Utilitários**: Funções auxiliares e helpers
+2. **Camada de Prompts**: Prompts estruturados para comunicação com LLMs
+
+   - `systemPrompt`: Define o papel e instruções do modelo
+   - `analysisPrompt`: Constrói prompts dinâmicos com dados de cobertura
+
+3. **Camada de Utilitários**: Funções auxiliares e helpers
 
    - Sistema de arquivos
    - Logging estruturado
 
-3. **Camada de Tipos**: Definições TypeScript para type-safety
+4. **Camada de Tipos**: Definições TypeScript para type-safety
 
-4. **Camada de Configuração**: Gerenciamento de variáveis de ambiente e providers LLM
+5. **Camada de Configuração**: Gerenciamento de variáveis de ambiente e providers LLM
 
 ### 🔄 Padrão Multi-Provider
 

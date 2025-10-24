@@ -42,42 +42,6 @@ export class GitHubService {
     }
   }
 
-  async getRepositoryInfo(owner: string, repo: string): Promise<any> {
-    try {
-      const response = await this.octokit.repos.get({
-        owner,
-        repo,
-      });
-      return response.data;
-    } catch (error) {
-      logger.error(`Erro ao obter info do repo ${owner}/${repo}`, error);
-      throw error;
-    }
-  }
-
-  async getFileContent(
-    owner: string,
-    repo: string,
-    path: string
-  ): Promise<string> {
-    try {
-      const response = await this.octokit.repos.getContent({
-        owner,
-        repo,
-        path,
-      });
-
-      if ("content" in response.data) {
-        return Buffer.from(response.data.content, "base64").toString("utf-8");
-      }
-
-      throw new Error("Arquivo não encontrado ou é um diretório");
-    } catch (error) {
-      logger.error(`Erro ao obter conteúdo: ${owner}/${repo}/${path}`, error);
-      throw error;
-    }
-  }
-
   async cloneRepository(
     owner: string,
     repo: string,

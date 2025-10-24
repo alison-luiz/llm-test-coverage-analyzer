@@ -4,7 +4,7 @@ import { FileSystemUtils } from "../utils/fileSystem";
 import { GitHubService } from "./GitHubService";
 import { CoverageService } from "./CoverageService";
 import { LLMService } from "./LLMService";
-import { Repository, CoverageReport, GapAnalysis } from "../types";
+import { CoverageReport, GapAnalysis } from "../types";
 import { config } from "../config";
 
 export class AnalysisOrchestrator {

@@ -1,5 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import { logger } from "../utils/logger";
+import { FileSystemUtils } from "../utils/fileSystem";
 import { config } from "../config";
 import { Repository } from "../types";
 
@@ -53,6 +54,13 @@ export class GitHubService {
     try {
       const repoUrl = `https://github.com/${owner}/${repo}.git`;
       const fullPath = path.join(destPath, repo);
+
+      // Verificar se o diretório já existe e removê-lo se necessário
+      const exists = await FileSystemUtils.fileExists(fullPath);
+      if (exists) {
+        logger.info(`Diretório já existe, removendo: ${fullPath}`);
+        await FileSystemUtils.removeDirectory(fullPath);
+      }
 
       logger.info(`Clonando repositório: ${repoUrl}`);
       execSync(`git clone ${repoUrl} ${fullPath}`, { stdio: "inherit" });

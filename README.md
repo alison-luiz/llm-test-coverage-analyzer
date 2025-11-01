@@ -59,10 +59,12 @@ Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC) do curs
 
 - 🔍 **Análise Automática de Cobertura**: Processa relatórios de cobertura e identifica gaps
 - 🤖 **Integração com LLMs**: Utiliza modelos de linguagem avançados para análise inteligente
-- 📊 **Geração de Relatórios**: Cria relatórios detalhados sobre a qualidade dos testes
+- 📊 **Geração de Relatórios**: Cria relatórios detalhados sobre a qualidade dos testes (JSON e TXT)
 - 🔗 **Integração GitHub**: Conecta-se diretamente com repositórios para análise
 - 📁 **Análise Local**: Suporta análise de repositórios locais
 - 💾 **Persistência de Dados**: Armazena análises e relatórios para consulta posterior
+- ⏱️ **Métricas de Performance**: Rastreia e exibe tempos detalhados de execução (clonagem, instalação, testes, extração de código, análise LLM)
+- 📝 **Sistema de Logs**: Captura e salva todos os logs de execução em arquivos TXT para auditoria
 
 ---
 
@@ -188,25 +190,55 @@ GITHUB_TOKEN=ghp_seu_token_aqui
 
 ## 🎮 Como Usar
 
-### Executar Anáise Repositório Remoto
+### Executar Análise Repositório Remoto
 
 ```bash
 npm start repo <usuario> <repositorio>
 Exemplo: npm start repo facebook react
 ```
 
-### Executar Anáise Repositórios Local
+### Executar Análise Repositório Local
 
 ```bash
 npm start local <caminho>
 Exemplo: npm start local ./meu-projeto
+Exemplo: npm start local data/repositories/javascript-algorithms
 ```
 
-### Executar Anáise Repositórios Multiplos
+### Executar Análise Repositórios Múltiplos
 
 ```bash
 npm start multiple <linguagem> [minStars] [maxRepos]
 Exemplo: npm start multiple JavaScript 100 3
+```
+
+### Relatórios Gerados
+
+Após cada análise, o sistema gera dois arquivos na pasta `data/reports/`:
+
+- **JSON**: Relatório completo com métricas, gaps identificados, priorizações e sugestões
+- **TXT**: Logs completos da execução para auditoria e debug
+
+Os arquivos são nomeados com o padrão: `<repositorio>_<modelo-llm>_<timestamp>.<extensão>`
+
+**Exemplo de saída:**
+
+```
+📊 RESULTADOS: react
+⏱️  Tempo total de execução: 245.30s
+📊 TEMPOS DETALHADOS:
+   📦 Clonagem: 15.20s
+   📥 Instalação de dependências: 120.50s
+   🧪 Testes: 85.30s
+   📝 Extração de código: 10.20s
+   🤖 Análise LLM: 14.10s
+📈 Branch coverage inicial: 78.50%
+📈 Line coverage inicial: 82.30%
+📄 Total de arquivos: 245
+⚠️  Arquivos com < 90% branch coverage: 45
+📁 Gaps identificados: 23
+⚠️  Gaps priorizados: 8
+💡 Sugestões: 12
 ```
 
 ## 📁 Estrutura do Projeto
@@ -228,12 +260,13 @@ llm-test-coverage-analyzer/
 │   │   └── index.ts         # Tipos e interfaces
 │   ├── utils/               # Utilitários
 │   │   ├── fileSystem.ts    # Operações de sistema de arquivos
-│   │   └── logger.ts        # Sistema de logs estruturados
+│   │   ├── logger.ts        # Sistema de logs estruturados
+│   │   └── logCollector.ts  # Coletor de logs para persistência
 │   └── index.ts             # Ponto de entrada da aplicação
 ├── dist/                    # Arquivos compilados (gerado)
 ├── data/                    # Dados temporários e relatórios
 │   ├── repositories/        # Repositórios clonados
-│   └── reports/             # Relatórios gerados em JSON
+│   └── reports/             # Relatórios gerados (JSON e TXT com logs)
 ├── package.json             # Dependências do projeto
 ├── tsconfig.json            # Configuração TypeScript
 └── README.md                # Este arquivo
@@ -260,7 +293,8 @@ O sistema é organizado em camadas:
 3. **Camada de Utilitários**: Funções auxiliares e helpers
 
    - Sistema de arquivos
-   - Logging estruturado
+   - Logging estruturado com coleta automática
+   - Persistência de logs em arquivos TXT
 
 4. **Camada de Tipos**: Definições TypeScript para type-safety
 
@@ -293,4 +327,3 @@ Trabalho de Conclusão de Curso - 2025
 Desenvolvido com 💙 por [Alison Luiz da Silva](https://github.com/alison-luiz)
 
 </div>
-

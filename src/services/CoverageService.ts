@@ -19,6 +19,7 @@ export class CoverageService {
 
       // Instalar dependências
       logger.info("Instalando dependências...");
+      const installationStartTime = Date.now();
       try {
         execSync("npm install", { cwd: projectPath, stdio: "inherit" });
       } catch (error) {
@@ -28,9 +29,14 @@ export class CoverageService {
           stdio: "inherit",
         });
       }
+      const installationTime = Date.now() - installationStartTime;
+      logger.info(
+        `⏱️  Instalação concluída em ${(installationTime / 1000).toFixed(2)}s`
+      );
 
       // Executar testes com cobertura
       logger.info("Executando testes...");
+      const testStartTime = Date.now();
       try {
         execSync("npm test -- --coverage --coverageReporters=json", {
           cwd: projectPath,
@@ -39,6 +45,8 @@ export class CoverageService {
       } catch (error) {
         logger.warn("Testes falharam, mas continuando análise de cobertura");
       }
+      const testTime = Date.now() - testStartTime;
+      logger.info(`⏱️  Testes concluídos em ${(testTime / 1000).toFixed(2)}s`);
 
       // Verificar se tem NYC e gerar relatório JSON
       const nycOutputPath = path.join(projectPath, ".nyc_output");
@@ -71,6 +79,10 @@ export class CoverageService {
       const coverageData = await FileSystemUtils.readJSON(coveragePath);
       const report = this.parseCoverageReport(coverageData, projectPath);
 
+      // Adicionar tempos ao relatório
+      report.installationTime = installationTime;
+      report.testTime = testTime;
+
       // Exibir relatório visual
       this.displayCoverageReport(report);
 
@@ -101,9 +113,13 @@ export class CoverageService {
     const filesWithLowCoverage: UncoveredFile[] = [];
     let totalLines = 0;
     let coveredLines = 0;
+    let totalBranches = 0;
+    let coveredBranches = 0;
+    let totalFiles = 0;
 
     for (const [filePath, fileData] of Object.entries(coverageData)) {
       const data = fileData as any;
+      totalFiles++;
 
       // Estatísticas de linhas
       const statements = data.s || {};
@@ -114,6 +130,10 @@ export class CoverageService {
 
       // Calcular branch coverage
       const branchCoverage = this.calculateBranchCoverage(data.b || {});
+
+      // Acumular branch coverage total
+      totalBranches += branchCoverage.total;
+      coveredBranches += branchCoverage.covered;
 
       // Filtrar arquivos com branch coverage < 90%
       if (branchCoverage.percentage < 90) {
@@ -148,11 +168,17 @@ export class CoverageService {
     const coveragePercentage =
       totalLines > 0 ? (coveredLines / totalLines) * 100 : 0;
 
+    const branchCoveragePercentage =
+      totalBranches > 0 ? (coveredBranches / totalBranches) * 100 : 100;
+
     return {
       repositoryName: path.basename(projectPath),
       totalLines,
       coveredLines,
       coveragePercentage: Math.round(coveragePercentage * 100) / 100,
+      branchCoveragePercentage:
+        Math.round(branchCoveragePercentage * 100) / 100,
+      totalFiles,
       uncoveredFiles: filesWithLowCoverage,
       timestamp: new Date(),
     };
@@ -293,13 +319,19 @@ export class CoverageService {
     console.log("📊 RELATÓRIO DE COBERTURA");
     console.log("=".repeat(70));
     console.log(`📁 Repositório: ${report.repositoryName}`);
-    console.log(`📈 Cobertura Total: ${report.coveragePercentage.toFixed(2)}%`);
+    console.log(`📈 Line Coverage: ${report.coveragePercentage.toFixed(2)}%`);
+    console.log(
+      `🔀 Branch Coverage: ${report.branchCoveragePercentage.toFixed(2)}%`
+    );
     console.log(`📝 Total de Linhas: ${report.totalLines}`);
     console.log(`✅ Linhas Cobertas: ${report.coveredLines}`);
     console.log(
       `❌ Linhas Não Cobertas: ${report.totalLines - report.coveredLines}`
     );
-    console.log(`📄 Arquivos com Gaps: ${report.uncoveredFiles.length}`);
+    console.log(`📄 Total de Arquivos: ${report.totalFiles}`);
+    console.log(
+      `⚠️  Arquivos com Branch Coverage < 90%: ${report.uncoveredFiles.length}`
+    );
     console.log("=".repeat(70));
 
     if (report.uncoveredFiles.length > 0) {

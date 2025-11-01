@@ -10,8 +10,12 @@ export interface CoverageReport {
   totalLines: number;
   coveredLines: number;
   coveragePercentage: number;
+  branchCoveragePercentage: number;
+  totalFiles: number;
   uncoveredFiles: UncoveredFile[];
   timestamp: Date;
+  installationTime?: number; // tempo de instalação de dependências em milissegundos
+  testTime?: number; // tempo de execução dos testes em milissegundos
 }
 
 export interface UncoveredFile {
@@ -43,6 +47,19 @@ export interface GapAnalysis {
   prioritizedGaps: PrioritizedGap[];
   suggestions: string[];
   analysisDate: Date;
+  executionTime: number; // em milissegundos
+  executionTimeDetails: {
+    cloneTime: number; // tempo de clonagem em milissegundos
+    installationTime: number; // tempo de instalação de dependências em milissegundos
+    testTime: number; // tempo de execução dos testes em milissegundos
+    codeExtractionTime: number; // tempo de extração de snippets em milissegundos
+    llmAnalysisTime: number; // tempo de análise com LLM em milissegundos
+  };
+  initialBranchCoverage: number; // em porcentagem
+  initialLineCoverage: number; // em porcentagem
+  totalFiles: number;
+  filesWithLowBranchCoverage: number; // arquivos com < 90% branch coverage
+  llmModel: string; // nome do modelo LLM utilizado (ex: "gpt-4", "claude-sonnet-4")
 }
 
 export interface Gap {

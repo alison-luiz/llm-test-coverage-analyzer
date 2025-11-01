@@ -52,4 +52,29 @@ export class FileSystemUtils {
       throw error;
     }
   }
+
+  static async writeFile(filePath: string, content: string): Promise<void> {
+    try {
+      const dir = path.dirname(filePath);
+      await this.ensureDirectory(dir);
+      await fs.writeFile(filePath, content, "utf-8");
+      logger.debug(`Arquivo salvo: ${filePath}`);
+    } catch (error) {
+      logger.error(`Erro ao salvar arquivo ${filePath}`, error);
+      throw error;
+    }
+  }
+
+  static async removeDirectory(dirPath: string): Promise<void> {
+    try {
+      const exists = await this.fileExists(dirPath);
+      if (exists) {
+        await fs.rm(dirPath, { recursive: true, force: true });
+        logger.debug(`Diretório removido: ${dirPath}`);
+      }
+    } catch (error) {
+      logger.error(`Erro ao remover diretório ${dirPath}`, error);
+      throw error;
+    }
+  }
 }

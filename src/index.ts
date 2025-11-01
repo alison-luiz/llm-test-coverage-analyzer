@@ -6,6 +6,50 @@ function displayResults(analysis: GapAnalysis) {
   console.log("\n" + "=".repeat(60));
   console.log(`📊 RESULTADOS: ${analysis.repositoryName}`);
   console.log("=".repeat(60));
+  console.log(`🤖 LLM utilizado: ${analysis.llmModel}`);
+  console.log(
+    `⏱️  Tempo total de execução: ${(analysis.executionTime / 1000).toFixed(
+      2
+    )}s`
+  );
+  console.log("\n📊 TEMPOS DETALHADOS:");
+  if (analysis.executionTimeDetails.cloneTime > 0) {
+    console.log(
+      `   📦 Clonagem: ${(
+        analysis.executionTimeDetails.cloneTime / 1000
+      ).toFixed(2)}s`
+    );
+  }
+  console.log(
+    `   📥 Instalação de dependências: ${(
+      analysis.executionTimeDetails.installationTime / 1000
+    ).toFixed(2)}s`
+  );
+  console.log(
+    `   🧪 Testes: ${(analysis.executionTimeDetails.testTime / 1000).toFixed(
+      2
+    )}s`
+  );
+  console.log(
+    `   📝 Extração de código: ${(
+      analysis.executionTimeDetails.codeExtractionTime / 1000
+    ).toFixed(2)}s`
+  );
+  console.log(
+    `   🤖 Análise LLM: ${(
+      analysis.executionTimeDetails.llmAnalysisTime / 1000
+    ).toFixed(2)}s`
+  );
+  console.log(
+    `📈 Branch coverage inicial: ${analysis.initialBranchCoverage.toFixed(2)}%`
+  );
+  console.log(
+    `📈 Line coverage inicial: ${analysis.initialLineCoverage.toFixed(2)}%`
+  );
+  console.log(`📄 Total de arquivos: ${analysis.totalFiles}`);
+  console.log(
+    `⚠️  Arquivos com < 90% branch coverage: ${analysis.filesWithLowBranchCoverage}`
+  );
   console.log(`📁 Gaps identificados: ${analysis.gaps.length}`);
   console.log(`⚠️  Gaps priorizados: ${analysis.prioritizedGaps.length}`);
   console.log(`💡 Sugestões: ${analysis.suggestions.length}`);

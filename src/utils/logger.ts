@@ -1,3 +1,5 @@
+import { logCollector } from "./logCollector";
+
 type LogLevel = "info" | "warn" | "error" | "debug";
 
 class Logger {
@@ -19,27 +21,35 @@ class Logger {
   }
 
   info(message: string, data?: any): void {
+    const formattedMessage = this.formatMessage("info", message, data);
     if (this.shouldLog("info")) {
-      console.log(this.formatMessage("info", message, data));
+      console.log(formattedMessage);
     }
+    logCollector.addLog(formattedMessage);
   }
 
   warn(message: string, data?: any): void {
+    const formattedMessage = this.formatMessage("warn", message, data);
     if (this.shouldLog("warn")) {
-      console.warn(this.formatMessage("warn", message, data));
+      console.warn(formattedMessage);
     }
+    logCollector.addLog(formattedMessage);
   }
 
   error(message: string, error?: any): void {
+    const formattedMessage = this.formatMessage("error", message, error);
     if (this.shouldLog("error")) {
-      console.error(this.formatMessage("error", message, error));
+      console.error(formattedMessage);
     }
+    logCollector.addLog(formattedMessage);
   }
 
   debug(message: string, data?: any): void {
+    const formattedMessage = this.formatMessage("debug", message, data);
     if (this.shouldLog("debug")) {
-      console.debug(this.formatMessage("debug", message, data));
+      console.debug(formattedMessage);
     }
+    logCollector.addLog(formattedMessage);
   }
 }
 
